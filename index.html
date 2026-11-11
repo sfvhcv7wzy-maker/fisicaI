@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ronda 2: ¡Detectives del movimiento!</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&display=swap">
+<style>
+:root{--bg:#F1F7F4;--fg:#10262B;--card:#fff;--line:#c9ddd6;--a:#0B7A61;--b:#C73A2E;--hi:#FFD23F;--hf:#10262B;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E2A2F;--fg:#EAF6F2;--card:#163A40;--line:#2a5359}}
+:root[data-theme="dark"]{--bg:#0E2A2F;--fg:#EAF6F2;--card:#163A40;--line:#2a5359}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:'Bricolage Grotesque',system-ui,sans-serif;line-height:1.45}
+main{max-width:720px;margin:0 auto;padding:16px}
+h1{font-size:2rem;line-height:1.1;margin:8px 0 4px;font-weight:800}
+h2{font-size:1.4rem;margin:8px 0}
+p{margin:6px 0}
+.tabs{display:flex;gap:8px;margin:16px 0}
+button{font:inherit;color:inherit;cursor:pointer}
+.tabs button,.btn{padding:12px;border:2px solid var(--fg);background:transparent;border-radius:12px;font-weight:800}
+.tabs button{flex:1}
+.tabs button[aria-selected=true]{background:var(--hi);color:var(--hf);border-color:var(--hi)}
+.btn{margin:12px 8px 0 0}
+.btn.main{background:var(--hi);color:var(--hf);border-color:var(--hi)}
+section[hidden]{display:none}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.card{perspective:700px;border:0;background:none;padding:0;aspect-ratio:1/1.05}
+.in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.card.on .in{transform:rotateY(180deg)}
+.f,.k{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;text-align:center}
+.f{background:var(--hi);color:var(--hf);font-size:2.6rem;font-weight:800}
+.f small{font-size:.9rem}
+.k{background:var(--card);border:2px solid var(--fg);transform:rotateY(180deg)}
+.k span{font-size:2rem}.k b{font-size:1rem}.k small{font-size:.8rem}
+.score{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.team{border-radius:16px;padding:12px;text-align:center;color:#fff}
+.ta{background:var(--a)}.tb{background:var(--b)}
+.team output{display:block;font-size:2.6rem;font-weight:800}
+.team button{border:2px solid #fff;background:transparent;color:#fff;border-radius:10px;padding:6px 14px;font-weight:800;font-size:1.1rem}
+.sit{background:var(--card);border:2px solid var(--fg);border-radius:16px;padding:16px;margin-top:12px}
+.time{font-size:3rem;font-weight:800;text-align:center}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;width:100%;background:var(--hi)}
+.ans{display:none;border-left:6px solid var(--a);padding:8px 12px;margin-top:12px;font-weight:500}
+.ans.on{display:block}
+.qr{margin-top:24px;text-align:center;background:var(--card);border-radius:16px;padding:16px}
+#qr{display:inline-block;background:#fff;padding:10px;border-radius:10px}
+#qr img,#qr canvas{display:block}
+.qr small{display:block;word-break:break-all;opacity:.75;margin-top:8px}
+@media (prefers-reduced-motion:reduce){.in{transition:none}}
+</style></head>
+<body><main>
+<h1>Cinemática en acción</h1>
+<p>Física I · Universidad Dominicana Organización y Método</p>
+
+
+<section id="r2">
+<h2>¡Detectives del movimiento!</h2>
+<p>Dos equipos, 15 segundos por situación. El primero en responder bien gana un punto.</p>
+<div class="score">
+<div class="team ta"><div>Equipo A</div><output id="sa">0</output><button data-t="a" data-d="-1" aria-label="Quitar punto al equipo A">−</button> <button data-t="a" data-d="1" aria-label="Sumar punto al equipo A">+1</button></div>
+<div class="team tb"><div>Equipo B</div><output id="sb">0</output><button data-t="b" data-d="-1" aria-label="Quitar punto al equipo B">−</button> <button data-t="b" data-d="1" aria-label="Sumar punto al equipo B">+1</button></div>
+</div>
+<div class="sit">
+<small id="num"></small>
+<p id="q" style="font-size:1.15rem;font-weight:500"></p>
+<div class="time" id="time">15</div>
+<div class="bar"><i id="fill"></i></div>
+<div class="ans" id="ans"></div>
+<button class="btn main" id="start">Iniciar 15 s</button>
+<button class="btn" id="show">Ver respuesta</button>
+<button class="btn" id="next">Siguiente</button>
+</div>
+</section>
+
+<div class="qr">
+<p><b>Escanea para abrir esta ronda en tu celular</b></p>
+<div id="qr"></div>
+<small id="url"></small>
+</div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const $=s=>document.querySelector(s);
+// Ronda 2
+const SIT=[
+["Un auto sale de casa, recorre 3 km por varias calles y llega a una escuela que está a 2 km en línea recta de la casa. ¿Cuál es la distancia recorrida y cuál es el desplazamiento?","Distancia: 3 km. Desplazamiento: 2 km (en línea recta, de la casa a la escuela)."],
+["Una persona va sentada dentro de un autobús en marcha. ¿Está en reposo o en movimiento?","Depende del sistema de referencia: en reposo respecto al autobús, en movimiento respecto a la calle."],
+["Una moto recorre 120 m en 10 s a velocidad constante. ¿Cuál es su velocidad?","v = d / t = 120 m / 10 s = 12 m/s."],
+["Un ciclista pasa de 0 a 6 m/s en 3 s. ¿Cuál es su aceleración?","a = (vf − vi) / t = (6 − 0) / 3 = 2 m/s²."],
+["Un atleta da una vuelta completa a una pista de 400 m y llega al punto de partida. ¿Cuál es su distancia y cuál su desplazamiento?","Distancia: 400 m. Desplazamiento: 0 m, porque la posición final es igual a la inicial."],
+["Una pelota se suelta desde un balcón. ¿Qué tipo de movimiento tiene y qué aceleración tiene?","Caída libre, con aceleración de la gravedad g ≈ 9,8 m/s² hacia abajo."],
+["La línea imaginaria que dibuja un balón de baloncesto al ser lanzado hacia el aro. ¿Qué elemento de la cinemática es?","La trayectoria (en este caso, parabólica)."],
+["Un tren que viaja a 20 m/s frena hasta detenerse en 5 s. ¿Cuál es su aceleración?","a = (0 − 20) / 5 = −4 m/s². El signo negativo indica que frena (desaceleración)."]];
+let i=0,timer=null,sc={a:0,b:0};
+function show(){
+  clearInterval(timer);
+  $('#num').textContent=`Situación ${i+1} de ${SIT.length}`;
+  $('#q').textContent=SIT[i][0];
+  $('#ans').textContent=SIT[i][1];$('#ans').classList.remove('on');
+  $('#time').textContent='15';$('#fill').style.width='100%';
+  $('#start').textContent='Iniciar 15 s';
+}
+$('#start').onclick=()=>{
+  clearInterval(timer);
+  const t0=Date.now();
+  timer=setInterval(()=>{
+    const left=Math.max(0,15-(Date.now()-t0)/1000);
+    $('#time').textContent=left>0?Math.ceil(left):'¡Tiempo!';
+    $('#fill').style.width=(left/15*100)+'%';
+    if(left<=0)clearInterval(timer);
+  },100);
+  $('#start').textContent='Reiniciar 15 s';
+};
+$('#show').onclick=()=>$('#ans').classList.toggle('on');
+$('#next').onclick=()=>{i=(i+1)%SIT.length;show()};
+document.querySelectorAll('.team button').forEach(b=>b.onclick=()=>{
+  const t=b.dataset.t;sc[t]=Math.max(0,sc[t]+Number(b.dataset.d));
+  $('#s'+t).textContent=sc[t];
+});
+show();
+
+// Código QR con el enlace de esta misma página
+const link=location.href.split('#')[0];
+$('#url').textContent=link;
+try{new QRCode($('#qr'),{text:link,width:168,height:168,colorDark:'#10262B',colorLight:'#ffffff'})}catch(e){}
+</script>
+</body></html>
